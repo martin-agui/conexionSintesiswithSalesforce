@@ -114,12 +114,12 @@ public class servicioSintesis {
 		
         serviciosCiclosWsSintesisComBo.ciEntry login = new serviciosCiclosWsSintesisComBo.ciEntry();
         login.key ='login';
-        login.value='digitalTV';
+        login.value='';
         listEntryParam.add(login);
         
         serviciosCiclosWsSintesisComBo.ciEntry password = new serviciosCiclosWsSintesisComBo.ciEntry();
         password.key ='password';
-        password.value='r6hTDaAMD';
+        password.value='';
         listEntryParam.add(password);
         
         createParameters(listEntryParam);
