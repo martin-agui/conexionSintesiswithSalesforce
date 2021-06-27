@@ -176,12 +176,12 @@ public class servicioSintesis {
 		
         serviciosCiclosWsSintesisComBo.ciEntry login = new serviciosCiclosWsSintesisComBo.ciEntry();
         login.key ='login';
-        login.value='';
+        login.value='digitalTV';
         this.listEntryParam.add(login);
         
         serviciosCiclosWsSintesisComBo.ciEntry password = new serviciosCiclosWsSintesisComBo.ciEntry();
         password.key ='password';
-        password.value='';
+        password.value='r6hTDaAMD';
         this.listEntryParam.add(password);
         
     }
