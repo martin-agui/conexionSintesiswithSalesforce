@@ -177,22 +177,12 @@ public class servicioSintesis {
         serviciosCiclosWsSintesisComBo.ciEntry login = new serviciosCiclosWsSintesisComBo.ciEntry();
         login.key ='login';
         login.value='';
-<<<<<<< HEAD
         this.listEntryParam.add(login);
-=======
-        listEntryParam.add(login);
->>>>>>> 20a58ebc88a6b49c3327de0fd01443fbbbee7f37
         
         serviciosCiclosWsSintesisComBo.ciEntry password = new serviciosCiclosWsSintesisComBo.ciEntry();
         password.key ='password';
         password.value='';
-<<<<<<< HEAD
         this.listEntryParam.add(password);
-=======
-        listEntryParam.add(password);
-        
-        createParameters(listEntryParam);
->>>>>>> 20a58ebc88a6b49c3327de0fd01443fbbbee7f37
         
     }
 
