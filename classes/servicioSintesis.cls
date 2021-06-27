@@ -230,7 +230,7 @@ public class servicioSintesis {
                                                     WHERE  Id =: this.idInvoiceSave
                                                     LIMIT  1];
                 
-                facturaBilling.Subestado__c = '	Error Sintesis';
+                facturaBilling.Subestado__c = 'Error Sintesis';
                 update facturaBilling;
 
             }
