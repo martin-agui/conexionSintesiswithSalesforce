@@ -10,7 +10,7 @@
 **/
 public class servicioSintesis {
 
-	String idInvoiceSave;
+    String idInvoiceSave;
     String descriptionMethod;
     Integer identifier;
     String operation;
@@ -57,7 +57,7 @@ public class servicioSintesis {
         createListItems();
         createItems();
         createListEntryForDocumentParameters();
-		createDocumentParameters();
+	createDocumentParameters();
         createDocumentRequest();
         createMethod();
         createListEntryForParameters();
@@ -222,9 +222,9 @@ public class servicioSintesis {
 
     public void generatePDF(){
 
-		String facturaBase64 = this.outputData.graphicRepresentation;
+	String facturaBase64 = this.outputData.graphicRepresentation;
         String jsonStr = facturaBase64;
-		Attachment attach = new Attachment();
+	Attachment attach = new Attachment();
         attach.contentType = 'application/pdf';
         attach.name = 'invoice.pdf';
         attach.parentId = this.idInvoiceSave;
