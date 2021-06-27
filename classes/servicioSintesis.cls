@@ -10,7 +10,7 @@
 **/
 public class servicioSintesis {
 
-    String idInvoiceSave;
+	String idInvoiceSave;
     String descriptionMethod;
     Integer identifier;
     String operation;
@@ -28,8 +28,7 @@ public class servicioSintesis {
     serviciosCiclosWsSintesisComBo.ciOutputData outputData;
     serviciosCiclosWsSintesisComBo.ciFacturaResp factura;
     serviciosCiclosWsSintesisComBo.ciDatosDosificacion datosFactura;
-
-
+    
     public servicioSintesis(String idInvoice){
 
         this.idInvoiceSave      = idInvoice;
@@ -52,26 +51,37 @@ public class servicioSintesis {
         this.datosFactura       = new serviciosCiclosWsSintesisComBo.ciDatosDosificacion();
 
     }
+    
+    
+    private class ManageException extends Exception{}
+    
     public void facturacionSintesis(){
-
-        createListItems();
-        createItems();
-        createListEntryForDocumentParameters();
-	createDocumentParameters();
-        createDocumentRequest();
-        createMethod();
-        createListEntryForParameters();
-        createParameters();
-        createRequest();
-        callSintesis();
-        handleResponse();
-        generatePDF();
-        saveNroFacturaAndNroAuthorization();
-
+        try{
+            createListItems();
+            createItems();
+            createListEntryForDocumentParameters();
+            createDocumentParameters();
+            createDocumentRequest();
+            createMethod();
+            createListEntryForParameters();
+            createParameters();
+            createRequest();
+            callSintesis();
+            handleResponse();
+            if( this.outputData.graphicRepresentation != Null ){
+                generatePDF();
+                saveNroFacturaAndNroAuthorization();
+            }else{
+                system.debug('Esta vacío el ouput!');
+        	}
+        }catch( Exception e ){
+            throw new ManageException( e.getMessage() );
+        }
+        
     }
 
-    public void createListItems(){
-
+    private void createListItems(){
+        
     /*LISTA DE ITEMS----------------------------------------------------------------------------------*/
         List<blng__InvoiceLine__c> lineasDeFactura = [
             SELECT blng__Quantity__c,blng__TotalAmount__c, Name ,
@@ -106,14 +116,14 @@ public class servicioSintesis {
         
     }
 
-    public void createItems(){
-        
+    private void createItems(){
+
         this.items.lstItems = this.listItems;
         
     }
 
-    public void createListEntryForDocumentParameters(){
-        
+    private void createListEntryForDocumentParameters(){
+
         serviciosCiclosWsSintesisComBo.ciEntry CliRazonSocial = new serviciosCiclosWsSintesisComBo.ciEntry();
         CliRazonSocial.key = 'CliRazonSocial';
         CliRazonSocial.value = 'Martinc Aguilera';
@@ -151,18 +161,20 @@ public class servicioSintesis {
 
     }
 
-    public void createDocumentParameters(){
+    private void createDocumentParameters(){
 
         this.documentParameters.entry = this.listEntryDP;
 
     }
-    public void createDocumentRequest(){
-       
+    
+    private void createDocumentRequest(){
+
         this.documentRequest.items = this.items;    
         this.documentRequest.documentParameters = this.documentParameters;
 
     }
-    public void createMethod(){
+    
+    private void createMethod(){
         
         this.method.description = this.descriptionMethod;
         this.method.identifier = this.identifier;
@@ -171,9 +183,8 @@ public class servicioSintesis {
         
     }
     
-    public void createListEntryForParameters(){
+    private void createListEntryForParameters(){
         
-		
         serviciosCiclosWsSintesisComBo.ciEntry login = new serviciosCiclosWsSintesisComBo.ciEntry();
         login.key ='login';
         login.value='';
@@ -186,25 +197,25 @@ public class servicioSintesis {
         
     }
 
-    public void createParameters(){
-        
+    private void createParameters(){
+
         this.parameters.entry = this.listEntryParam;
         
     }
     
-    public void createRequest(){
-        
+    private void createRequest(){
+
         this.request.addParameters = this.parameters;
         this.request.method = this.method;
     }
     
-    public void callSintesis(){
-        
+    private void callSintesis(){
+
         this.returnSintesis = this.ciclosEjecutar.execute(this.request);
         
     }
     
-    public void handleResponse(){
+    private void handleResponse(){
         
         if( this.returnSintesis.replyMessage == 'Factura Generada' &&
          	this.returnSintesis.responseFlag == 'OK' ){
@@ -212,19 +223,25 @@ public class servicioSintesis {
                 this.outputData = this.returnSintesis.outputData;
 
             }else{
-
-                system.debug(this.returnSintesis.replyMessage);
-                system.debug(this.returnSintesis.responseFlag);
+                
                 // MANEJAR RESPUESTA DE ERROR ACÁ!
+                blng__Invoice__c facturaBilling = [ SELECT Id , Subestado__c 
+                                                    FROM   blng__Invoice__c
+                                                    WHERE  Id =: this.idInvoiceSave
+                                                    LIMIT  1];
+                
+                facturaBilling.Subestado__c = '	Error Sintesis';
+                update facturaBilling;
+
             }
         
     }
 
-    public void generatePDF(){
+    private void generatePDF(){
 
-	String facturaBase64 = this.outputData.graphicRepresentation;
+		String facturaBase64 = this.outputData.graphicRepresentation;
         String jsonStr = facturaBase64;
-	Attachment attach = new Attachment();
+		Attachment attach = new Attachment();
         attach.contentType = 'application/pdf';
         attach.name = 'invoice.pdf';
         attach.parentId = this.idInvoiceSave;
@@ -235,7 +252,7 @@ public class servicioSintesis {
 
     }
 
-    public void saveNroFacturaAndNroAuthorization( ){
+    private void saveNroFacturaAndNroAuthorization( ){
 
        this.datosFactura = this.factura.datosDosificacion;
 
